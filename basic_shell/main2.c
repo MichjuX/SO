@@ -42,7 +42,7 @@ void execute_command(char *command, char *args[], int *output_redirected) {
 
 void execute_script(char *script_path) {
     // Sprawdź, czy Twoja powłoka jest zainstalowana w standardowym miejscu (/bin/bash)
-    char *interpreter = "/mnt/e/SO/basic_shell/main2";
+    char *interpreter = "/bin/bash";
 
     // Przekaż ścieżkę do skryptu jako argument interpretera
     char *script_args[] = {interpreter, script_path, NULL};
