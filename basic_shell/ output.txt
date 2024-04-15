@@ -1,0 +1,71 @@
+total 28
+-rwxrwxr-x 1 mint mint 16768 Apr 12 18:49 main
+-rw-rw-r-- 1 mint mint  2967 Apr 12 18:49 main.c
+-rw-r--r-- 1 mint mint     0 Apr 12 18:49  output.txt
+-rw-r--r-- 1 mint mint    38 Apr 12 18:46  output.txt
+
+-rw-rw-r-- 1 mint mint     0 Apr 12 18:44 output.txt
+$ $ $ $ total 36
+-rw-r--r-- 1 mint mint    35 Apr 12 18:50  current_date.txt
+-rwxrwxr-x 1 mint mint 16768 Apr 12 18:52 main
+-rw-rw-r-- 1 mint mint  2967 Apr 12 18:52 main.c
+-rw-r--r-- 1 mint mint   275 Apr 12 18:50  output.txt
+-rw-r--r-- 1 mint mint    38 Apr 12 18:46  output.txt
+
+-rw-rw-r-- 1 mint mint     0 Apr 12 18:44 output.txt
+$ total 36
+-rw-r--r-- 1 mint mint    35 Apr 12 18:50  current_date.txt
+-rwxrwxr-x 1 mint mint 16768 Apr 12 18:52 main
+-rw-rw-r-- 1 mint mint  2969 Apr 12 18:52 main.c
+-rw-r--r-- 1 mint mint   604 Apr 12 18:52  output.txt
+-rw-r--r-- 1 mint mint    38 Apr 12 18:46  output.txt
+
+-rw-rw-r-- 1 mint mint     0 Apr 12 18:44 output.txt
+$ total 36
+-rw-r--r-- 1 mint mint    35 Apr 12 18:50  current_date.txt
+-rwxrwxr-x 1 mint mint 16768 Apr 12 18:58 main
+-rw-rw-r-- 1 mint mint  3239 Apr 12 18:57 main.c
+-rw-r--r-- 1 mint mint   933 Apr 12 18:52  output.txt
+-rw-r--r-- 1 mint mint    38 Apr 12 18:46  output.txt
+
+$ total 36
+-rw-r--r-- 1 mint mint    35 Apr 12 18:50  current_date.txt
+-rwxrwxr-x 1 mint mint 16768 Apr 12 18:58 main
+-rw-rw-r-- 1 mint mint  3239 Apr 12 18:57 main.c
+-rw-r--r-- 1 mint mint  1209 Apr 12 18:58  output.txt
+-rw-r--r-- 1 mint mint    38 Apr 12 18:46  output.txt
+
+-rw-rw-r-- 1 mint mint     0 Apr 12 18:58 output.txt
+$ total 36
+-rw-r--r-- 1 mint mint    35 Apr 12 18:50  current_date.txt
+-rwxrwxr-x 1 mint mint 16768 Apr 12 18:59 main
+-rw-rw-r-- 1 mint mint  3239 Apr 12 18:57 main.c
+-rw-r--r-- 1 mint mint  1538 Apr 12 18:58  output.txt
+-rw-r--r-- 1 mint mint    38 Apr 12 18:46  output.txt
+
+-rw-rw-r-- 1 mint mint     0 Apr 12 18:58 output.txt
+$ total 36
+-rw-r--r-- 1 mint mint    35 Apr 12 18:50  current_date.txt
+-rwxrwxr-x 1 mint mint 16768 Apr 12 18:59 main
+-rw-rw-r-- 1 mint mint  3239 Apr 12 18:57 main.c
+-rw-r--r-- 1 mint mint  1867 Apr 12 18:59  output.txt
+-rw-r--r-- 1 mint mint    38 Apr 12 18:46  output.txt
+
+-rw-rw-r-- 1 mint mint     0 Apr 12 18:58 output.txt
+$ total 36
+-rw-r--r-- 1 mint mint    35 Apr 12 18:50  current_date.txt
+-rwxrwxr-x 1 mint mint 16768 Apr 12 19:00 main
+-rw-rw-r-- 1 mint mint  3239 Apr 12 19:00 main.c
+-rw-r--r-- 1 mint mint  2196 Apr 12 18:59  output.txt
+-rw-r--r-- 1 mint mint    38 Apr 12 18:46  output.txt
+
+-rw-rw-r-- 1 mint mint     0 Apr 12 18:58 output.txt
+$ total 36
+-rw-r--r-- 1 mint mint    35 Apr 12 18:50  current_date.txt
+-rwxrwxr-x 1 mint mint 16768 Apr 12 19:01 main
+-rw-rw-r-- 1 mint mint  3389 Apr 12 19:01 main.c
+-rw-r--r-- 1 mint mint  2525 Apr 12 19:00  output.txt
+-rw-r--r-- 1 mint mint    38 Apr 12 18:46  output.txt
+
+-rw-rw-r-- 1 mint mint     0 Apr 12 18:58 output.txt
+$ 
