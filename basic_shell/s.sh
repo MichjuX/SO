@@ -1,6 +1,6 @@
 #!/mnt/e/SO/basic_shell/main2
 
-ls -l
+ls -l | grep main
 
 
 
