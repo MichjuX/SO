@@ -37,28 +37,27 @@ void execute_command(char *command, char *args[], int *output_redirected) {
 }
 
 void execute_script(char *script_path) {
-    pid_t pid = fork();
-    if (pid < 0) {
-        perror("fork");
-        exit(EXIT_FAILURE);
-    } else if (pid == 0) {
-        // Wykonaj skrypt bash
-        execlp("bash", "bash", script_path, NULL);
-        perror("execlp");
-        exit(EXIT_FAILURE);
-    } else {
-        wait(NULL);
-    }
+    char *script_args[] = {"/bin/bash", script_path, NULL};
+    execvp("/bin/bash", script_args);
+    perror("execvp");
+    exit(EXIT_FAILURE);
 }
 
-int main() {
+
+
+int main(int argc, char *argv[]) {
+    if (argc > 1) {
+        execute_script(argv[1]);
+        return 0;
+    }
+
     char command_line[MAX_COMMAND_LEN];
     char *args[MAX_ARGS];
     char *token;
-    const char delim[] = " \n\t";
     const char background_delim[] = "&";
     const char output_redirect_delim[] = ">>";
     const char pipe_delim[] = "|"; // Nowy operator potoku
+    const char delim[] = " \n\t"; // Dodana deklaracja stałej
 
     int output_redirected = 0;
 
@@ -164,4 +163,3 @@ int main() {
 
     return 0;
 }
-

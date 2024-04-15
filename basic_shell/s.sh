@@ -1,4 +1,4 @@
-#!/home/mint/Desktop/SO/projekt_1/main2
+#!/mnt/e/SO/basic_shell/main2
 
 ls -l
 

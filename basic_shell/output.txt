@@ -1,40 +1,11 @@
-total 40
--rw-r--r-- 1 mint mint    35 Apr 12 18:50  current_date.txt
--rwxrwxr-x 1 mint mint 16928 Apr 12 19:41 main
--rw-rw-r-- 1 mint mint  4852 Apr 12 19:41 main.c
--rw-r--r-- 1 mint mint  2854 Apr 12 19:01  output.txt
--rw-r--r-- 1 mint mint    38 Apr 12 18:46  output.txt
-
--rw-r--r-- 1 mint mint     0 Apr 12 19:42 output.txt
-total 44
--rw-r--r-- 1 mint mint    35 Apr 12 18:50  current_date.txt
--rwxrwxr-x 1 mint mint 16928 Apr 12 19:41 main
--rw-rw-r-- 1 mint mint  4852 Apr 12 19:41 main.c
--rw-r--r-- 1 mint mint  2854 Apr 12 19:01  output.txt
--rw-r--r-- 1 mint mint    38 Apr 12 18:46  output.txt
-
--rw-r--r-- 1 mint mint   327 Apr 12 19:42 output.txt
-total 44
--rw-r--r-- 1 mint mint    35 Apr 12 18:50  current_date.txt
--rwxrwxr-x 1 mint mint 16928 Apr 12 19:46 main
--rw-rw-r-- 1 mint mint  4852 Apr 12 19:46 main.c
--rw-r--r-- 1 mint mint  2854 Apr 12 19:01  output.txt
--rw-r--r-- 1 mint mint    38 Apr 12 18:46  output.txt
-
--rw-r--r-- 1 mint mint   654 Apr 12 19:42 output.txt
-total 44
--rw-r--r-- 1 mint mint    35 Apr 12 18:50  current_date.txt
--rwxrwxr-x 1 mint mint 17056 Apr 12 19:50 main
--rw-rw-r-- 1 mint mint  6378 Apr 12 19:50 main.c
--rw-r--r-- 1 mint mint  2854 Apr 12 19:01  output.txt
--rw-r--r-- 1 mint mint    38 Apr 12 18:46  output.txt
-
--rw-r--r-- 1 mint mint   981 Apr 12 19:46 output.txt
-total 44
--rw-r--r-- 1 mint mint    35 Apr 12 18:50  current_date.txt
--rwxrwxr-x 1 mint mint 16928 Apr 12 19:54 main
--rw-rw-r-- 1 mint mint  4851 Apr 12 19:54 main.c
--rw-r--r-- 1 mint mint  2854 Apr 12 19:01  output.txt
--rw-r--r-- 1 mint mint    38 Apr 12 18:46  output.txt
-
--rw-r--r-- 1 mint mint  1308 Apr 12 19:50 output.txt
+total 60
+-rwxrwxrwx 1 michjux michjux    35 Apr 12 18:50  current_date.txt
+-rwxrwxrwx 1 michjux michjux  2854 Apr 12 19:01  output.txt
+-rwxrwxrwx 1 michjux michjux    38 Apr 12 18:46  output.txt_
+-rwxrwxrwx 1 michjux michjux 16928 Apr 12 19:54 main
+-rwxrwxrwx 1 michjux michjux  4855 Apr 12 19:55 main.c
+-rwxrwxrwx 1 michjux michjux 16768 Apr 15 17:53 main2
+-rwxrwxrwx 1 michjux michjux  5620 Apr 15 17:49 main2.c
+-rwxrwxrwx 1 michjux michjux     0 Apr 15 17:53 output.txt
+-rwxrwxrwx 1 michjux michjux    40 Apr 15 17:49 s.sh
+-rwxrwxrwx 1 michjux michjux    21 Apr 15 17:51 s2.sh
