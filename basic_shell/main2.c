@@ -32,13 +32,22 @@ void execute_command(char *command, char *args[], int *output_redirected) {
         perror("execvp");
         exit(EXIT_FAILURE);
     } else {
-        wait(NULL);
+        int status;
+        waitpid(pid, &status, 0);
+        if (!WIFEXITED(status)) {
+            fprintf(stderr, "Komenda \"%s\" nie została poprawnie wykonana.\n", command);
+        }
     }
 }
 
 void execute_script(char *script_path) {
-    char *script_args[] = {"/bin/bash", script_path, NULL};
-    execvp("/bin/bash", script_args);
+    // Sprawdź, czy Twoja powłoka jest zainstalowana w standardowym miejscu (/bin/bash)
+    char *interpreter = "/mnt/e/SO/basic_shell/main2";
+
+    // Przekaż ścieżkę do skryptu jako argument interpretera
+    char *script_args[] = {interpreter, script_path, NULL};
+    execvp(interpreter, script_args);
+    // Jeśli execvp() się nie uda, wyświetl błąd
     perror("execvp");
     exit(EXIT_FAILURE);
 }
@@ -56,8 +65,8 @@ int main(int argc, char *argv[]) {
     char *token;
     const char background_delim[] = "&";
     const char output_redirect_delim[] = ">>";
-    const char pipe_delim[] = "|"; // Nowy operator potoku
-    const char delim[] = " \n\t"; // Dodana deklaracja stałej
+    const char pipe_delim[] = "|";
+    const char delim[] = " \n\t";
 
     int output_redirected = 0;
 
@@ -103,9 +112,9 @@ int main(int argc, char *argv[]) {
         args[arg_count] = NULL;
 
         // Utwórz potok dla każdej komendy, z wyjątkiem ostatniej
-        int pipefd[2];
         int prev_read_end = STDIN_FILENO;
         for (int i = 0; i < arg_count; ++i) {
+            int pipefd[2];
             if (i < arg_count - 1) {
                 pipe(pipefd);
             }
