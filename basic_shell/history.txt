@@ -4,3 +4,12 @@ ls -l >> output.txt
 ls -l$
 ls -l $
 ls -l&
+ls -l | grep main | grep c
+ls
+ls -l | grep txt
+ls -l | grep txt | grep output
+ls -l >> out.txt
+ls
+ls -l | grep main
+ls -l
+ls -l | grep c | grep 2
