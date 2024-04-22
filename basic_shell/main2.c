@@ -10,14 +10,14 @@
 #define MAX_COMMAND_LEN 1024
 #define HISTORY_FILE "./history.txt"
 
-void execute_command(char *command, char *args[], int output_redirected) {
+void execute_command(char *command, char *args[], int output_redirected, char *output_file) {
     pid_t pid = fork();
     if (pid < 0) {
         perror("fork");
         exit(EXIT_FAILURE);
     } else if (pid == 0) {
         if (output_redirected) {
-            int output_fd = open("output.txt", O_WRONLY | O_CREAT | O_APPEND, 0644);
+            int output_fd = open(output_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
             if (output_fd == -1) {
                 perror("open");
                 exit(EXIT_FAILURE);
@@ -94,6 +94,7 @@ int main(int argc, char *argv[]) {
 
         int output_redirected = 0;
         int run_in_background = 0;
+        char *output_file = NULL;
 
         char *token = strtok(command_line, background_delim);
         if (token != NULL) {
@@ -113,6 +114,7 @@ int main(int argc, char *argv[]) {
             *output_redirect = '\0';
             output_redirect += strlen(output_redirect_delim);
             output_redirected = 1;
+            output_file = strtok(output_redirect, delim);
         }
 
         int arg_count = 0;
@@ -147,7 +149,7 @@ int main(int argc, char *argv[]) {
                     close(pipefd[0]);
                 } else {
                     if (output_redirected) {
-                        int output_fd = open("output.txt", O_WRONLY | O_CREAT | O_APPEND, 0644);
+                        int output_fd = open(output_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
                         if (output_fd == -1) {
                             perror("open");
                             exit(EXIT_FAILURE);

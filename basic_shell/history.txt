@@ -13,3 +13,12 @@ ls
 ls -l | grep main
 ls -l
 ls -l | grep c | grep 2
+cd
+ls
+cd ..
+ls
+sleep 5 &
+ls -l >> out.txt
+ls -l >> out.txt
+ls
+sleep 2 &

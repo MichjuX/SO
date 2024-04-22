@@ -36,3 +36,17 @@ total 100
 -rwxrwxrwx 1 michjux michjux    52 Apr 15 19:26 s.sh
 -rwxrwxrwx 1 michjux michjux    21 Apr 15 17:51 s2.sh
 -rwxrwxrwx 1 michjux michjux 30527 Apr 15 18:12 this project (literally).jpg
+total 100
+-rwxrwxrwx 1 michjux michjux    35 Apr 12 18:50  current_date.txt
+-rwxrwxrwx 1 michjux michjux  2854 Apr 12 19:01  output.txt
+-rwxrwxrwx 1 michjux michjux    38 Apr 12 18:46  output.txt_
+-rwxrwxrwx 1 michjux michjux   254 Apr 22 12:12 history.txt
+-rwxrwxrwx 1 michjux michjux  1969 Apr 15 20:54 kacper.c
+-rwxrwxrwx 1 michjux michjux 17048 Apr 15 19:46 main
+-rwxrwxrwx 1 michjux michjux  4855 Apr 12 19:55 main.c
+-rwxrwxrwx 1 michjux michjux 17048 Apr 15 20:53 main2
+-rwxrwxrwx 1 michjux michjux  5095 Apr 15 20:53 main2.c
+-rwxrwxrwx 1 michjux michjux  2072 Apr 16 15:28 output.txt
+-rwxrwxrwx 1 michjux michjux    52 Apr 15 19:26 s.sh
+-rwxrwxrwx 1 michjux michjux    21 Apr 15 17:51 s2.sh
+-rwxrwxrwx 1 michjux michjux 30527 Apr 15 18:12 this project (literally).jpg
