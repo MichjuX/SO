@@ -1,0 +1,4 @@
+main2: main2.c
+	gcc -pthread -o $@ $^
+clean:
+	rm -f main2

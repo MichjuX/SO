@@ -22,3 +22,95 @@ ls -l >> out.txt
 ls -l >> out.txt
 ls
 sleep 2 &
+ls -l
+ls -l | grep main
+ls -l | grep main
+ls -l | grep main
+sleep 5&
+ls -l 
+|ls -l | grep main
+sleep &
+sleep 5 &
+sleep 5 &
+[A
+sleep 5 &
+sleep 5 &
+ls -l | grep main
+ls -l | grep main
+cd ..
+cd
+ls
+pwd
+cd ..
+cd..
+cd  ..
+cd ..&
+echo test
+echo test &
+sleep 2 &
+sleep 5 &
+ls -l | grep main
+ls &
+pwd
+ls
+./main2
+cd 
+cd 
+cd ..
+twoja stara
+sleep 1 &
+ls -l
+ls -l | grep txt
+&
+potok
+cd
+cd
+chuj
+dupa
+cycli
+jebac
+so
+so
+cat main2.c
+ls
+ls -l
+ls -l | grep main
+"cd .."
+cd ..
+ls -l
+cd 
+cd ..
+cd
+cd
+cd ..
+ls
+pwd
+ls -l | grep main
+cd
+chdir 
+chdir ..
+cd ..
+cd
+cd
+cd ..
+cd ./
+cd /home
+cd
+cd
+cd 
+ls
+cd
+cd
+ls -l
+cd ..
+ls -l
+ls -al
+cd ..
+cd
+ls -l | grep main
+sleep 5
+sleep 5 &
+sleep 5 &
+cd ..
+ls
+

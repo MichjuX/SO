@@ -6,89 +6,112 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <signal.h>
+#include <errno.h>
 
 #define MAX_ARGS 64
 #define MAX_COMMAND_LEN 1024
-#define HISTORY_FILE "history.txt"
-#define MAX_HISTORY_COMMANDS 20
 
-// Zmienna globalna przechowująca historię poleceń
-char command_history[MAX_HISTORY_COMMANDS][MAX_COMMAND_LEN];
-int command_count = 0;
+char current_directory[MAX_COMMAND_LEN];
 
-void execute_command(char *command, char *args[], int *output_redirected) {
-    // Dodaj polecenie do historii
-    if (command_count < MAX_HISTORY_COMMANDS) {
-        strcpy(command_history[command_count], command);
-        command_count++;
-    } else {
-        // Przesuń starsze polecenia w historii
-        for (int i = 0; i < MAX_HISTORY_COMMANDS - 1; ++i) {
-            strcpy(command_history[i], command_history[i + 1]);
-        }
-        strcpy(command_history[MAX_HISTORY_COMMANDS - 1], command);
+void execute_script(char *script_path) {
+    char *interpreter = "/bin/bash";
+    char *script_args[] = {interpreter, script_path, NULL};
+    execvp(interpreter, script_args);
+    perror("execvp");
+    exit(EXIT_FAILURE);
+}
+
+void display_history() {
+    char *home_directory = getenv("HOME");
+    if (home_directory == NULL) {
+        fprintf(stderr, "Error: HOME environment variable is not set.\n");
+        return;
     }
 
-    // Wykonaj polecenie
-    pid_t pid = fork();
-    if (pid < 0) {
-        perror("fork");
-        exit(EXIT_FAILURE);
-    } else if (pid == 0) {
-        // Otwórz plik docelowy w trybie dołączania tylko jeśli przekierowanie wyjścia jest włączone
-        if (*output_redirected) {
-            int output_fd = open("output.txt", O_WRONLY | O_CREAT | O_APPEND, 0644);
-            if (output_fd == -1) {
-                perror("open");
-                exit(EXIT_FAILURE);
-            }
+    char history_file[MAX_COMMAND_LEN];
+    snprintf(history_file, sizeof(history_file), "%s/history.txt", home_directory);
 
-            // Przekieruj wyjście standardowe do pliku
-            dup2(output_fd, STDOUT_FILENO);
-            close(output_fd);
+    FILE *file = fopen(history_file, "r");
+    if (file) {
+        char line[MAX_COMMAND_LEN];
+        while (fgets(line, sizeof(line), file)) {
+            printf("%s", line);
         }
-
-        execvp(command, args);
-        perror("execvp");
-        exit(EXIT_FAILURE);
+        fclose(file);
     } else {
-        wait(NULL);
+        perror("Unable to open history file");
     }
 }
 
-// Obsługa sygnału SIGQUIT - wyświetlenie historii poleceń
-void sigquit_handler(int sig) {
-    printf("Command History:\n");
-    for (int i = 0; i < command_count; ++i) {
-        printf("%d: %s\n", i + 1, command_history[i]);
-    }
+void handle_sigquit(int sig) {
+    printf("\n");
+    display_history();
+    printf("$ ");
+    fflush(stdout);
+    signal(SIGQUIT, handle_sigquit); // Ponowne ustawienie obsługi SIGQUIT
 }
 
-int main() {
-    // Ustaw obsługę sygnału SIGQUIT
-    signal(SIGQUIT, sigquit_handler);
+void handle_sigchld(int sig) {
+    int saved_errno = errno;
+    while (waitpid((pid_t)(-1), 0, WNOHANG) > 0);
+    errno = saved_errno;
+}
+
+int main(int argc, char *argv[]) {
+    if (argc > 1){
+        execute_script(argv[1]);
+        return 0;
+    }
+    
+    signal(SIGQUIT, handle_sigquit);
+    signal(SIGCHLD, handle_sigchld);
+
+    getcwd(current_directory, sizeof(current_directory));
 
     char command_line[MAX_COMMAND_LEN];
     char *args[MAX_ARGS];
-    char *token;
-    const char delim[] = " \n\t";
     const char background_delim[] = "&";
-    const char output_redirect_delim[] = ">>"; // przekierowanie
-    const char pipe_delim[] = "|"; // potoki
-
-    int output_redirected = 0;
+    const char output_redirect_delim[] = ">>";
+    const char pipe_delim[] = "|";
+    const char delim[] = " \n\t";
 
     while (1) {
         printf("$ ");
         fflush(stdout);
 
-        if (!fgets(command_line, sizeof(command_line), stdin)) {
-            break;
+        if (fgets(command_line, sizeof(command_line), stdin) == NULL) {
+            if (feof(stdin)) {
+                break;
+            } else {
+                perror("fgets");
+                exit(EXIT_FAILURE);
+            }
         }
 
-        // Sprawdź, czy ostatnim słowem jest '&'
+        char *home_directory = getenv("HOME");
+        if (home_directory == NULL) {
+            fprintf(stderr, "Error: HOME environment variable is not set.\n");
+            continue;
+        }
+
+        char history_file[MAX_COMMAND_LEN];
+        snprintf(history_file, sizeof(history_file), "%s/history.txt", home_directory);
+
+        FILE *history_file_ptr = fopen(history_file, "a");
+        if (history_file_ptr) {
+            fprintf(history_file_ptr, "%s", command_line);
+            fclose(history_file_ptr);
+        } else {
+            perror("Unable to open history file");
+        }
+
+        int output_redirected = 0;
+        char *output_file = NULL;
         int run_in_background = 0;
-        if ((token = strtok(command_line, background_delim)) != NULL) {
+
+        // Check if the command is to be run in background
+        char *token = strtok(command_line, background_delim);
+        if (token != NULL) {
             char *last_word = NULL;
             while ((token = strtok(NULL, background_delim)) != NULL) {
                 last_word = token;
@@ -96,21 +119,33 @@ int main() {
             if (last_word && strcmp(last_word, "") == 0) {
                 run_in_background = 1;
             } else {
-                strtok(command_line, "\n"); // Usuń znak nowej linii z ostatniego słowa
+                strtok(command_line, "\n");
             }
         }
 
-        // Sprawdź, czy występuje przekierowanie wyjścia
-        char *output_redirect = strstr(command_line, output_redirect_delim);
-        if (output_redirect != NULL) {
-            *output_redirect = '\0'; // Zakończ argument przed znakiem przekierowania
-            output_redirect += strlen(output_redirect_delim); // Przesuń wskaźnik za znak przekierowania
-            output_redirected = 1;
-        } else {
-            output_redirected = 0;
+        // Change directory command
+        if (strncmp(command_line, "cd", 2) == 0) {
+            char *new_dir = strtok(command_line + 2, delim);
+            if (new_dir == NULL) {
+                fprintf(stderr, "cd: missing argument\n");
+            } else {
+                if (chdir(new_dir) != 0) {
+                    perror("cd");
+                }
+            }
+            continue;
         }
 
-        // Podziel polecenie na komendy za pomocą potoku
+        // Output redirection
+        char *output_redirect = strstr(command_line, output_redirect_delim);
+        if (output_redirect != NULL) {
+            *output_redirect = '\0';
+            output_redirect += strlen(output_redirect_delim);
+            output_redirected = 1;
+            output_file = strtok(output_redirect, delim);
+        }
+
+        // Parse command into arguments
         int arg_count = 0;
         token = strtok(command_line, pipe_delim);
         while (token != NULL) {
@@ -119,34 +154,66 @@ int main() {
         }
         args[arg_count] = NULL;
 
-        // Utwórz potok dla każdej komendy, z wyjątkiem ostatniej
-        int pipefd[2];
-        int prev_read_end = STDIN_FILENO;
-        for (int i = 0; i < arg_count; ++i) {
+        int prev_read_end = STDIN_FILENO; // Inicjalizacja zmiennej przechowującej końcówkę czytania, początkowo ustawiona na STDIN_FILENO (czytanie z wejścia standardowego)
+        for (int i = 0; i < arg_count; ++i) { // Pętla przechodzi przez wszystkie elementy (komendy) zawarte w tablicy args[]
+            int pipefd[2]; // Tablica dla deskryptorów plików potoku
+
+            // Tworzenie potoku, jeśli nie jest to ostatnia komenda w potoku
             if (i < arg_count - 1) {
-                pipe(pipefd);
+                pipe(pipefd); // Tworzenie potoku
             }
 
-            char *cmd_args[MAX_ARGS];
-            char *cmd_token = strtok(args[i], delim);
-            int cmd_arg_count = 0;
+            char *cmd_args[MAX_ARGS]; // Tablica dla argumentów aktualnej komendy
+            char *cmd_token = strtok(args[i], delim); // Dzielenie komendy na argumenty
+            int cmd_arg_count = 0; // Licznik argumentów
+
+            // Wypełnianie tablicy argumentów aktualnej komendy
             while (cmd_token != NULL) {
                 cmd_args[cmd_arg_count++] = cmd_token;
                 cmd_token = strtok(NULL, delim);
             }
-            cmd_args[cmd_arg_count] = NULL;
+            cmd_args[cmd_arg_count] = NULL; // Zakończenie tablicy NULL-em
 
-            execute_command(cmd_args[0], cmd_args, &output_redirected);
+            pid_t pid = fork(); // Tworzenie nowego procesu
+            if (pid == 0) { // Kod dla procesu potomnego
+                dup2(prev_read_end, STDIN_FILENO); // Przekierowanie wejścia z poprzedniego procesu
+                if (i < arg_count - 1) {
+                    dup2(pipefd[1], STDOUT_FILENO); // Przekierowanie wyjścia do potoku (jeśli to nie jest ostatnia komenda)
+                    close(pipefd[0]); // Zamknięcie deskryptora czytania potoku
+                } else {
+                    // Jeśli przekierowanie wyjścia jest włączone, otwórz plik wyjściowy i przekieruj wyjście
+                    if (output_redirected) {
+                        int output_fd = open(output_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+                        if (output_fd == -1) {
+                            perror("open");
+                            exit(EXIT_FAILURE);
+                        }
+                        dup2(output_fd, STDOUT_FILENO);
+                        close(output_fd);
+                    }
+                }
 
+                // Wykonanie komendy
+                execvp(cmd_args[0], cmd_args);
+                perror("execvp"); // Wyświetlenie błędu, jeśli execvp się nie powiedzie
+                exit(EXIT_FAILURE);
+            } else if (pid < 0) { // Obsługa błędu podczas tworzenia procesu potomnego
+                perror("fork");
+                exit(EXIT_FAILURE);
+            }
+
+            // Zamknięcie deskryptora pisania potoku w procesie rodzicielskim
             if (i < arg_count - 1) {
-                close(pipefd[1]); // Zamykaj końcówkę piszącą
-                prev_read_end = pipefd[0]; // Ustaw końcówkę czytającą dla następnej komendy
+                close(pipefd[1]);
+                prev_read_end = pipefd[0]; // Ustawienie końca czytania na deskryptor czytania potoku dla następnej komendy
             }
         }
 
-        // Czekaj na zakończenie wszystkich procesów potomnych
-        for (int i = 0; i < arg_count; ++i) {
-            wait(NULL);
+        // Wait for child processes to finish, unless the command is to be run in background
+        if (!run_in_background) {
+            for (int i = 0; i < arg_count; ++i) {
+                wait(NULL);
+            }
         }
     }
 

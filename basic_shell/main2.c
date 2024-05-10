@@ -125,6 +125,31 @@ int main(int argc, char *argv[]) {
         }
         args[arg_count] = NULL;
 
+        if (strcmp(args[0], "cd") == 0) {
+            // Obsługa polecenia cd w procesie głównym
+            if (arg_count > 2) {
+                fprintf(stderr, "Usage: cd <directory>\n");
+            } else {
+                char *directory = (arg_count == 1) ? getenv("HOME") : args[1];
+                if (!directory || directory[0] == '\0') {
+                    fprintf(stderr, "cd: missing directory\n");
+                    continue;
+                }
+
+                char resolved_path[MAX_COMMAND_LEN];
+                if (realpath(directory, resolved_path) == NULL) {
+                    perror("realpath");
+                    continue;
+                }
+
+                if (chdir(resolved_path) != 0) {
+                    perror("chdir");
+                }
+            }
+            continue; // Nie wykonuj kolejnych kroków dla polecenia cd
+        }
+
+
         int prev_read_end = STDIN_FILENO;
         for (int i = 0; i < arg_count; ++i) {
             int pipefd[2];
@@ -179,3 +204,4 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+        
