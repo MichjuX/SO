@@ -110,18 +110,18 @@ int main(int argc, char *argv[]) {
         int run_in_background = 0;
 
         // Check if the command is to be run in background
-        char *token = strtok(command_line, background_delim);
-        if (token != NULL) {
-            char *last_word = NULL;
-            while ((token = strtok(NULL, background_delim)) != NULL) {
-                last_word = token;
-            }
-            if (last_word && strcmp(last_word, "") == 0) {
-                run_in_background = 1;
-            } else {
-                strtok(command_line, "\n");
-            }
+        // char *token = strtok(command_line, background_delim);
+        // Output redirection
+        char *rn_background = strstr(command_line, background_delim);
+        if (rn_background != NULL) {
+            *rn_background = '\0';
+            rn_background += strlen(background_delim);
+            run_in_background = 1;
+            printf("Running command in background.\n");
         }
+
+
+        // printf("flaga_bg: %d\n", run_in_background);
 
         // Change directory command
         if (strncmp(command_line, "cd", 2) == 0) {
@@ -145,9 +145,11 @@ int main(int argc, char *argv[]) {
             output_file = strtok(output_redirect, delim);
         }
 
+        // printf("flaga_out: %d\n", output_redirected);
+
         // Parse command into arguments
         int arg_count = 0;
-        token = strtok(command_line, pipe_delim);
+        char * token = strtok(command_line, pipe_delim);
         while (token != NULL) {
             args[arg_count++] = token;
             token = strtok(NULL, pipe_delim);
@@ -194,9 +196,17 @@ int main(int argc, char *argv[]) {
                 }
 
                 // Wykonanie komendy
-                execvp(cmd_args[0], cmd_args);
-                perror("execvp"); // Wyświetlenie błędu, jeśli execvp się nie powiedzie
-                exit(EXIT_FAILURE);
+                if (execvp(cmd_args[0], cmd_args) < 0){
+                    perror("execvp"); // Wyświetlenie błędu, jeśli execvp się nie powiedzie
+                    exit(EXIT_FAILURE);
+                }
+                
+            } else if (pid > 0) {
+                int status;
+                // printf("%d", run_in_background);
+                if (!run_in_background){
+                    waitpid(pid, &status, 0);
+                }
             } else if (pid < 0) { // Obsługa błędu podczas tworzenia procesu potomnego
                 perror("fork");
                 exit(EXIT_FAILURE);
@@ -209,12 +219,6 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        // Wait for child processes to finish, unless the command is to be run in background
-        if (!run_in_background) {
-            for (int i = 0; i < arg_count; ++i) {
-                wait(NULL);
-            }
-        }
     }
 
     return 0;

@@ -1,0 +1,25 @@
+-rwxrwxrwx 1 michjux michjux 17400 May 11 00:09 main
+-rwxrwxrwx 1 michjux michjux  7444 May 11 00:09 main.c
+-rwxrwxrwx 1 michjux michjux 17264 Apr 22 16:32 main2
+-rwxrwxrwx 1 michjux michjux  6086 Apr 22 16:32 main2.c
+total 108
+-rwxrwxrwx 1 michjux michjux    35 Apr 12 18:50  current_date.txt
+-rwxrwxrwx 1 michjux michjux  2854 Apr 12 19:01  output.txt
+-rwxrwxrwx 1 michjux michjux    38 Apr 12 18:46  output.txt_
+-rwxrwxrwx 1 michjux michjux    46 May 10 22:03 Makefile
+-rwxrwxrwx 1 michjux michjux   956 May 10 16:01 history.txt
+-rwxrwxrwx 1 michjux michjux  1969 Apr 15 20:54 kacper.c
+-rwxrwxrwx 1 michjux michjux 17400 May 11 00:21 main
+-rwxrwxrwx 1 michjux michjux  7563 May 11 00:21 main.c
+-rwxrwxrwx 1 michjux michjux 17264 Apr 22 16:32 main2
+-rwxrwxrwx 1 michjux michjux  6086 Apr 22 16:32 main2.c
+-rwxrwxrwx 1 michjux michjux   218 May 11 00:10 oaaa.txt
+-rwxrwxrwx 1 michjux michjux   831 Apr 22 12:13 out.txt
+-rwxrwxrwx 1 michjux michjux  2847 Apr 22 12:12 output.txt
+-rwxrwxrwx 1 michjux michjux    52 Apr 15 19:26 s.sh
+-rwxrwxrwx 1 michjux michjux    21 Apr 15 17:51 s2.sh
+-rwxrwxrwx 1 michjux michjux 30527 Apr 15 18:12 this project (literally).jpg
+-rwxrwxrwx 1 michjux michjux 17400 May 11 00:23 main
+-rwxrwxrwx 1 michjux michjux  7580 May 11 00:23 main.c
+-rwxrwxrwx 1 michjux michjux 17264 Apr 22 16:32 main2
+-rwxrwxrwx 1 michjux michjux  6086 Apr 22 16:32 main2.c
