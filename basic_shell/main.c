@@ -14,9 +14,10 @@
 char current_directory[MAX_COMMAND_LEN];
 
 void execute_script(char *script_path) {
-    char *interpreter = "/bin/bash";
+    char *interpreter = "./main";
     char *script_args[] = {interpreter, script_path, NULL};
-    execvp(interpreter, script_args);
+    // execvp(interpreter, script_args);
+    execvp(script_args[0], script_args);
     perror("execvp");
     exit(EXIT_FAILURE);
 }
@@ -95,7 +96,7 @@ int main(int argc, char *argv[]) {
         }
 
         char history_file[MAX_COMMAND_LEN];
-        snprintf(history_file, sizeof(history_file), "%s/history.txt", home_directory);
+        snprintf(history_file, sizeof(history_file), "%s/history.txt", home_directory); 
 
         FILE *history_file_ptr = fopen(history_file, "a");
         if (history_file_ptr) {
@@ -127,7 +128,7 @@ int main(int argc, char *argv[]) {
         if (strncmp(command_line, "cd", 2) == 0) {
             char *new_dir = strtok(command_line + 2, delim);
             if (new_dir == NULL) {
-                fprintf(stderr, "cd: missing argument\n");
+                chdir(getenv("HOME"));
             } else {
                 if (chdir(new_dir) != 0) {
                     perror("cd");
