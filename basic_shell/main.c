@@ -1,23 +1,28 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <fcntl.h>
-#include <signal.h>
-#include <errno.h>
+#include <stdio.h> //Zapewnia funkcje do operacji wejścia/wyjścia.
+#include <stdlib.h> //Zapewnia funkcje ogólne, takie jak alokacja pamięci (malloc, free) i kontrola procesu (exit)
+#include <unistd.h> //Zapewnia dostęp do funkcji systemowych, takich jak fork, execvp, dup2, itp.
+#include <string.h> //Zapewnia funkcje do manipulacji łańcuchami znaków, takie jak strcpy, strtok, itp.
+#include <sys/types.h> //Zawiera definicje typów danych używanych w systemowych wywołaniach funkcji.
+#include <sys/wait.h> //Zapewnia funkcje związane z oczekiwaniem na zakończenie procesów potomnych.
+#include <fcntl.h> //Zapewnia funkcje do manipulacji deskryptorami plików.
+#include <signal.h> //Zapewnia obsługę sygnałów.
+#include <errno.h> //Zapewnia dostęp do zmiennych globalnych errno i funkcji perror do obsługi błędów.
 
 #define MAX_ARGS 64
 #define MAX_COMMAND_LEN 1024
 
 char current_directory[MAX_COMMAND_LEN];
 
+//służy do wykonania skryptu shellowego, który jest przekazany jako argument funkcji.
 void execute_script(char *script_path) {
-    char *interpreter = "./main";
+    char *interpreter = "./main"; //Tworzy wskaźnik interpreter (odczytuje i wykonuje polecenia zawarte w skrypcie), który wskazuje na ścieżkę do interpretera naszej powłoki.
     char *script_args[] = {interpreter, script_path, NULL};
-    // execvp(interpreter, script_args);
+    //Tworzy tablicę script_args, która zawiera argumenty przekazane do interpretera. Pierwszy argument to ścieżka do 
+    //interpretera, drugi to ścieżka do skryptu, a trzeci to NULL, co jest wymagane przez funkcję execvp, aby zakończyć listę argumentów.
     execvp(script_args[0], script_args);
+    //Wywołuje funkcję execvp, która zastępuje obecny proces nowym procesem, uruchamiając interpreter bash z podanymi argumentami. 
+    //Funkcja execvp szuka interpretera bash w podanej ścieżce (/bin/bash) i wykonuje skrypt shellowy, którego ścieżka została przekazana.
+
     perror("execvp");
     exit(EXIT_FAILURE);
 }
@@ -32,6 +37,7 @@ void display_history() {
     char history_file[MAX_COMMAND_LEN];
     snprintf(history_file, sizeof(history_file), "%s/history.txt", home_directory);
 
+    // Otwarcie pliku do odczytu
     FILE *file = fopen(history_file, "r");
     if (file) {
         char line[MAX_COMMAND_LEN];
@@ -44,29 +50,36 @@ void display_history() {
     }
 }
 
+//funkcja obsluguje sygnal SIGQUIT ktory jesy wysylany po wcisniecuy CTRL + \ 
+//Po odebraniu sygnału SIGQUIT, funkcja drukuje nową linię, wyświetla historię poleceń 
+//(prawdopodobnie wczytaną z pliku history.txt) za pomocą funkcji display_history, a następnie drukuje znak dolara $ jako znak zachęty do wprowadzenia nowego polecenia.
 void handle_sigquit(int sig) {
     printf("\n");
     display_history();
     printf("$ ");
-    fflush(stdout);
+    fflush(stdout); //upewnienie sie ze dane wyjsciowe sa natychmiast zapisywane na ekranie
     signal(SIGQUIT, handle_sigquit); // Ponowne ustawienie obsługi SIGQUIT
 }
 
+//obsługująca sygnał SIGCHLD, który jest wysyłany, gdy dziecko procesu zakończy swoje działanie.
 void handle_sigchld(int sig) {
-    int saved_errno = errno;
-    while (waitpid((pid_t)(-1), 0, WNOHANG) > 0);
-    errno = saved_errno;
+    int saved_errno = errno; //Po odebraniu sygnału SIGCHLD, funkcja przechwytuje zmienną errno i zapisuje jej aktualną wartość.
+    while (waitpid((pid_t)(-1), 0, WNOHANG) > 0); //czeka na zakończenie wszystkich procesów potomnych, ale bez blokowania wykonywania programu w przypadku braku dostępnych procesów do zakończenia.
+    errno = saved_errno; //ponowne ustawienie errno na stara wartosc
 }
 
 int main(int argc, char *argv[]) {
+    // Sprawdza, czy został podany argument (np. ścieżka do skryptu)
     if (argc > 1){
         execute_script(argv[1]);
         return 0;
     }
     
+    //Ustawienie obsługi sygnałów SIGQUIT (Ctrl+\) i SIGCHLD (zakończenie dziecka)
     signal(SIGQUIT, handle_sigquit);
     signal(SIGCHLD, handle_sigchld);
 
+    // Pobranie aktualnego katalogu roboczego
     getcwd(current_directory, sizeof(current_directory));
 
     char command_line[MAX_COMMAND_LEN];
@@ -78,8 +91,9 @@ int main(int argc, char *argv[]) {
 
     while (1) {
         printf("$ ");
-        fflush(stdout);
+        fflush(stdout); //Wyczyszczenie bufora wyjścia, aby zapewnić natychmiastowe wyświetlenie znaku zachęty
 
+         // Wczytanie polecenia z linii poleceń
         if (fgets(command_line, sizeof(command_line), stdin) == NULL) {
             if (feof(stdin)) {
                 break;
@@ -98,6 +112,7 @@ int main(int argc, char *argv[]) {
         char history_file[MAX_COMMAND_LEN];
         snprintf(history_file, sizeof(history_file), "%s/history.txt", home_directory); 
 
+        // Otwieranie pliku do zapisu historii
         FILE *history_file_ptr = fopen(history_file, "a");
         if (history_file_ptr) {
             fprintf(history_file_ptr, "%s", command_line);
@@ -107,8 +122,8 @@ int main(int argc, char *argv[]) {
         }
 
         int output_redirected = 0;
-        char *output_file = NULL;
-        int run_in_background = 0;
+        char *output_file = NULL; //Wskaźnik na ciąg znaków, który będzie zawierał nazwę pliku wyjściowego, jeśli wyjście ma być przekierowane
+        int run_in_background = 0; 
 
         // Check if the command is to be run in background
         // char *token = strtok(command_line, background_delim);
@@ -124,7 +139,7 @@ int main(int argc, char *argv[]) {
 
         // printf("flaga_bg: %d\n", run_in_background);
 
-        // Change directory command
+        // Zmiana katalogu
         if (strncmp(command_line, "cd", 2) == 0) {
             char *new_dir = strtok(command_line + 2, delim);
             if (new_dir == NULL) {
@@ -137,7 +152,7 @@ int main(int argc, char *argv[]) {
             continue;
         }
 
-        // Output redirection
+        // Przekierowanie wyjścia
         char *output_redirect = strstr(command_line, output_redirect_delim);
         if (output_redirect != NULL) {
             *output_redirect = '\0';
@@ -148,7 +163,7 @@ int main(int argc, char *argv[]) {
 
         // printf("flaga_out: %d\n", output_redirected);
 
-        // Parse command into arguments
+        // Dzielenie na argumenty
         int arg_count = 0;
         char * token = strtok(command_line, pipe_delim);
         while (token != NULL) {

@@ -1,4 +1,4 @@
-#!/mnt/e/SO/basic_shell/main2
+#!/mnt/e/SO/basic_shell/main
 echo "######################################"
 echo "# Witam w skrypcie testującym shella #"
 echo "######################################"

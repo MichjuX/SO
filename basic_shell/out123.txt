@@ -1,22 +1,6 @@
  current_date.txt
  output.txt
  output.txt_
-Makefile
-history.txt
-kacper.c
-main
-main.c
-main2
-main2.c
-oaaa.txt
-out.txt
-output.txt
-s.sh
-s2.sh
-this project (literally).jpg
- current_date.txt
- output.txt
- output.txt_
 Dokumentacja_Shell_Sienkiewicz_Wyszynski.pdf
 Makefile
 basic_shell_Sienkiewicz_Wyszynski.zip
@@ -28,6 +12,7 @@ main2
 main2.c
 oaaa.txt
 out.txt
+out123.txt
 output.txt
 s.sh
 s2.sh
