@@ -31,7 +31,6 @@ void *client(void *num) {
     pthread_mutex_lock(&mutex);
     if (waiting_clients < chair_count) {
         waiting_clients++;
-        current_client = -1;  // Set to -1 to indicate waiting
         print_status();
 
         pthread_cond_signal(&cond_barber);
@@ -47,6 +46,10 @@ void *client(void *num) {
         pthread_mutex_lock(&print_lock);
         printf("Client %d is done with the haircut.\n", id);
         pthread_mutex_unlock(&print_lock);
+
+        pthread_mutex_lock(&mutex);
+        current_client = -1;
+        pthread_mutex_unlock(&mutex);
 
         pthread_cond_signal(&cond_barber);
     } else {
